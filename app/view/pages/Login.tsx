@@ -1,19 +1,27 @@
-import {
-  Button,
-  TextInput,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-} from "react-native";
-import React, { useState } from "react";
+import { Button, TextInput, View, StyleSheet, Pressable } from "react-native";
+import { IndexPath, Select, SelectItem, Text } from "@ui-kitten/components";
+import { Input } from "@ui-kitten/components";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import userService from "../../services/userService";
 
 const Login = () => {
   const [name, setName] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const { onLogin } = useAuth();
+
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(
+    new IndexPath(0),
+  );
+  const displayValue = usernames[selectedIndex.row];
+
+  useEffect(() => {
+    userService.getUsernames().then((usernames) => {
+      setUsernames(usernames ?? []);
+    });
+  }, []);
 
   async function handleLogin() {
     const response = await onLogin(name, pin);
@@ -26,13 +34,21 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>WEHP</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
+      <Select
+        selectedIndex={selectedIndex}
+        placeholder={"Select your username"}
+        value={displayValue}
+        onSelect={(index: IndexPath) => setSelectedIndex(index)}
+      >
+        {usernames && usernames.length > 0 ? (
+          usernames.map((username) => (
+            <SelectItem key={username} title={username} />
+          ))
+        ) : (
+          <SelectItem title="No usernames available" />
+        )}
+      </Select>
+      <Input
         style={styles.input}
         placeholder="PIN"
         value={pin}
@@ -41,6 +57,7 @@ const Login = () => {
         inputMode="numeric"
         maxLength={5}
       />
+
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button title="Login" onPress={handleLogin} />
     </View>

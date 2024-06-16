@@ -12,6 +12,16 @@ class UserService {
       return createError(error);
     }
   }
+
+  async getUsernames() {
+    try {
+      const response = await axiosInstance.get("/usernames");
+      return response.data;
+    } catch (error) {
+      if (!(error instanceof AxiosError)) return;
+      return createError(error);
+    }
+  }
 }
 
 const userService = new UserService();

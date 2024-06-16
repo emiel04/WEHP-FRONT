@@ -31,8 +31,10 @@ const Home = () => {
 const stylesheet = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
 });
 export default Home;
