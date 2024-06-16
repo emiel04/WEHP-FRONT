@@ -3,6 +3,7 @@ export interface Global {
 }
 
 export interface User {
+  id: number;
   name: string;
   isWehp: boolean;
 }

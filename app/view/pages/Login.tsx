@@ -12,10 +12,13 @@ const Login = () => {
   const { onLogin } = useAuth();
 
   const [usernames, setUsernames] = useState<string[]>([]);
-  const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(
-    new IndexPath(0),
-  );
-  const displayValue = usernames[selectedIndex.row];
+  const [selectedIndex, setSelectedIndex] = React.useState<
+    IndexPath | IndexPath[]
+  >(new IndexPath(0));
+
+  const displayValue = Array.isArray(selectedIndex)
+    ? usernames[selectedIndex[0].row]
+    : usernames[selectedIndex.row];
 
   useEffect(() => {
     userService.getUsernames().then((usernames) => {
@@ -23,8 +26,15 @@ const Login = () => {
     });
   }, []);
 
-  async function handleLogin() {
-    const response = await onLogin(name, pin);
+  function pinChange(pin: string) {
+    setPin(pin);
+    if (pin.length === 5) {
+      handleLogin(pin);
+    }
+  }
+
+  async function handleLogin(p: string) {
+    const response = await onLogin(displayValue, p);
 
     if (response?.error) {
       setError(response.message);
@@ -38,7 +48,7 @@ const Login = () => {
         selectedIndex={selectedIndex}
         placeholder={"Select your username"}
         value={displayValue}
-        onSelect={(index: IndexPath) => setSelectedIndex(index)}
+        onSelect={(index) => setSelectedIndex(index)}
       >
         {usernames && usernames.length > 0 ? (
           usernames.map((username) => (
@@ -52,14 +62,14 @@ const Login = () => {
         style={styles.input}
         placeholder="PIN"
         value={pin}
-        onChangeText={setPin}
+        onChangeText={pinChange}
         secureTextEntry
         inputMode="numeric"
         maxLength={5}
       />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Login" onPress={() => handleLogin(pin)} />
     </View>
   );
 };

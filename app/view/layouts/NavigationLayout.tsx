@@ -1,11 +1,13 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { ReactNode } from "react";
 import { NativeStackNavigatorProps } from "react-native-screens/lib/typescript/native-stack/types";
 import { useAuth } from "../../context/AuthContext";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import Categories from "../pages/Categories";
-import { Button } from "react-native";
+import { Button } from "@ui-kitten/components";
+import Add from "../pages/Add";
+import { useUser } from "../../context/UserContext";
 
 interface NavigationLayoutProps {
   children?: ReactNode;
@@ -13,7 +15,8 @@ interface NavigationLayoutProps {
 }
 
 const NavigationLayout = ({ children, Stack }: NavigationLayoutProps) => {
-  const { authState, onLogout } = useAuth();
+  const { authState } = useAuth();
+  const { user } = useUser();
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -23,12 +26,11 @@ const NavigationLayout = ({ children, Stack }: NavigationLayoutProps) => {
               name="Home"
               component={Home}
               options={{
-                headerRight: () => (
-                  <Button onPress={onLogout} title={"Logout"} />
-                ),
+                headerRight: () => NavigationHeader(),
               }}
             />
             <Stack.Screen name="Categories" component={Categories} />
+            {user?.isWehp && <Stack.Screen name="Add" component={Add} />}
           </>
         ) : (
           <Stack.Screen
@@ -39,6 +41,29 @@ const NavigationLayout = ({ children, Stack }: NavigationLayoutProps) => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+  );
+};
+
+const NavigationHeader = () => {
+  const navigation = useNavigation();
+  const { onLogout } = useAuth();
+  const { user } = useUser();
+
+  return (
+    <>
+      <Button onPress={onLogout} style={{ marginRight: user?.isWehp ? 16 : 0 }}>
+        Logout
+      </Button>
+      {user?.isWehp && (
+        <Button
+          onPress={() => {
+            navigation.navigate("Add" as never);
+          }}
+        >
+          {"     +     "}
+        </Button>
+      )}
+    </>
   );
 };
 

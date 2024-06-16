@@ -6,7 +6,7 @@ import { useUser } from "../../context/UserContext";
 import { Text } from "@ui-kitten/components";
 import StreepjeBlock from "../StreepjeComponent";
 
-const Home = () => {
+const Add = () => {
   const { user, setUser } = useUser();
   useEffect(() => {
     async function main() {
@@ -18,7 +18,7 @@ const Home = () => {
 
   return (
     <View style={stylesheet.container}>
-      <Text>Hallo {user?.name || ""}</Text>
+      {user?.isWehp && <StreepjeBlock></StreepjeBlock>}
     </View>
   );
 };
@@ -31,4 +31,4 @@ const stylesheet = StyleSheet.create({
     paddingHorizontal: 16,
   },
 });
-export default Home;
+export default Add;

@@ -13,15 +13,36 @@ class UserService {
     }
   }
 
-  async getUsernames() {
+  getUsernames = async (isWehp: boolean | undefined | null = null) => {
     try {
-      const response = await axiosInstance.get("/usernames");
+      let queryParam = "";
+      if (isWehp !== null && isWehp !== undefined) {
+        queryParam = `?isWehp=${isWehp}`;
+      }
+
+      const response = await axiosInstance.get(`/usernames${queryParam}`);
+
       return response.data;
     } catch (error) {
-      if (!(error instanceof AxiosError)) return;
-      return createError(error);
+      console.error("Error fetching usernames:", error);
+      throw error;
     }
-  }
+  };
+
+  getUsers = async (isWehp: boolean | undefined | null = null) => {
+    try {
+      let queryParam = "";
+      if (isWehp !== null && isWehp !== undefined) {
+        queryParam = `?isWehp=${isWehp}`;
+      }
+      const response = await axiosInstance.get(`/users${queryParam}`);
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching usernames:", error);
+      throw error;
+    }
+  };
 }
 
 const userService = new UserService();
