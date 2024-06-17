@@ -3,6 +3,7 @@ import { KEY_TOKEN } from "../config/config";
 import { createError } from "../helper/requesthelper";
 import { deleteItem, getItem, setItem } from "../helper/storage";
 import axiosInstance from "../config/axios";
+import { jwtDecode } from "jwt-decode";
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
   onRegister: (name: string, pin: string) => Promise<any>;

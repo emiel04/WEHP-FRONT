@@ -8,6 +8,7 @@ import Categories from "../pages/Categories";
 import { Button } from "@ui-kitten/components";
 import Add from "../pages/Add";
 import { useUser } from "../../context/UserContext";
+import { View } from "react-native";
 
 interface NavigationLayoutProps {
   children?: ReactNode;
@@ -27,6 +28,7 @@ const NavigationLayout = ({ children, Stack }: NavigationLayoutProps) => {
               component={Home}
               options={{
                 headerRight: () => NavigationHeader(),
+                title: user?.isWehp ? "Wehp" : "Mijn streepjes",
               }}
             />
             <Stack.Screen name="Categories" component={Categories} />
@@ -50,7 +52,7 @@ const NavigationHeader = () => {
   const { user } = useUser();
 
   return (
-    <>
+    <View style={{ flexDirection: "row", padding: 16 }}>
       <Button onPress={onLogout} style={{ marginRight: user?.isWehp ? 16 : 0 }}>
         Logout
       </Button>
@@ -63,7 +65,7 @@ const NavigationHeader = () => {
           {"     +     "}
         </Button>
       )}
-    </>
+    </View>
   );
 };
 

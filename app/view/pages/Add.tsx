@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import userService from "../../services/userService";
 import { useUser } from "../../context/UserContext";
 import { Text } from "@ui-kitten/components";
-import StreepjeBlock from "../StreepjeComponent";
+import StreepjeBlock from "../components/StreepjeComponent";
 
 const Add = () => {
   const { user, setUser } = useUser();

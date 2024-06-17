@@ -7,11 +7,11 @@ import {
   Text,
 } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
-import userService from "../services/userService";
-import { Category } from "../config/types";
-import categoryService from "../services/categoryService";
-import { User } from "../global";
-import streepService from "../services/streepService";
+import userService from "../../services/userService";
+import { Category } from "../../config/types";
+import categoryService from "../../services/categoryService";
+import { User } from "../../global";
+import streepService from "../../services/streepService";
 const StreepjeBlock = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [output, setOutput] = useState<string>("");
@@ -98,7 +98,7 @@ const StreepjeBlock = () => {
       </Select>
 
       <Input
-        multiline={true}
+        multiline={false}
         placeholder="Reden"
         value={reason}
         onChangeText={setReason}

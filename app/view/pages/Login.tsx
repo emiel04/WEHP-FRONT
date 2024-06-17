@@ -4,7 +4,9 @@ import { Input } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import userService from "../../services/userService";
-
+import { getItem, setItem } from "../../helper/storage";
+import { jwtDecode } from "jwt-decode";
+import { KEY_LASTLOGIN } from "../../config/config";
 const Login = () => {
   const [name, setName] = useState("");
   const [pin, setPin] = useState("");
@@ -21,8 +23,12 @@ const Login = () => {
     : usernames[selectedIndex.row];
 
   useEffect(() => {
-    userService.getUsernames().then((usernames) => {
+    userService.getUsernames().then(async (usernames) => {
       setUsernames(usernames ?? []);
+      const sub = await getItem(KEY_LASTLOGIN);
+      if (usernames.includes(sub)) {
+        setSelectedIndex(new IndexPath(usernames.indexOf(sub)));
+      }
     });
   }, []);
 
@@ -38,6 +44,10 @@ const Login = () => {
 
     if (response?.error) {
       setError(response.message);
+    } else {
+      const token = response.token;
+      const decoded = jwtDecode(token);
+      await setItem(KEY_LASTLOGIN, decoded.sub);
     }
   }
 
@@ -80,6 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: 16,
     paddingTop: 120,
+    gap: 6,
   },
   title: {
     fontSize: 24,
@@ -92,7 +103,6 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 12,
-    paddingHorizontal: 8,
   },
   error: {
     color: "red",
